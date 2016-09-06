@@ -1,32 +1,44 @@
 var express = require('express');
+var path = require('path');
+
 var app = express();
+app.use(express.static(path.join(__dirname + '/public')));
+console.log(path.join(__dirname + '/public'));
 
 var open = require('open');
 
 // Hold all URL/number code tuples in an array. Not ideal, but it could easily be
 // adapted to a hash table for scaling if that was ever needed (which it won't
-// be).
+// be for my purposes).
 var urlCodes = [];
 
 app.get('/', function(req, res) {
-   res.sendfile('hello.html', {root: __dirname + '/public' } ); 
+   res.sendFile('default.html', {root: path.join(__dirname + '/public')});
 });
 
 app.get('/new/:url', function(req, res) {
+    var shortenedData = {
+        originalURL: req.params.url,
+        shortenedURL: null
+    };
+    
     // Check if a code has already been generated for that particular URL.
     var urlIndex = -1;
     for (var i = 0; i < urlCodes.length; i++) {
         urlIndex = urlCodes[i].indexOf(req.params.url);
-        if (urlIndex !== -1)
+        if (urlIndex !== -1) {
+            shortenedData.shortenedURL = 'https://backend-projects-gleutheuser.c9users.io/' + urlCodes[i][1];
             break;
+        }
     }
     
     if (urlIndex === -1) {
         var code = Math.round(Math.random() * 1000);
         urlCodes.push([req.params.url, code]);
+        shortenedData.shortenedURL = 'https://backend-projects-gleutheuser.c9users.io/' + code;
     }
     
-    res.end(urlCodes.toString());
+    res.end(JSON.stringify(shortenedData));
 });
 
 app.get('/:code', function(req, res) {
