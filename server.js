@@ -27,7 +27,7 @@ app.get('/new/:url', function(req, res) {
     for (var i = 0; i < urlCodes.length; i++) {
         urlIndex = urlCodes[i].indexOf(req.params.url);
         if (urlIndex !== -1) {
-            shortenedData.shortenedURL = 'https://backend-projects-gleutheuser.c9users.io/' + urlCodes[i][1];
+            shortenedData.shortenedURL = 'https://gleutheuser-url-shortener.herokuapp.com/' + urlCodes[i][1];
             break;
         }
     }
@@ -35,7 +35,7 @@ app.get('/new/:url', function(req, res) {
     if (urlIndex === -1) {
         var code = Math.round(Math.random() * 1000);
         urlCodes.push([req.params.url, code]);
-        shortenedData.shortenedURL = 'https://backend-projects-gleutheuser.c9users.io/' + code;
+        shortenedData.shortenedURL = 'https://gleutheuser-url-shortener.herokuapp.com/' + code;
     }
     
     res.end(JSON.stringify(shortenedData));
